@@ -1,0 +1,93 @@
+<div class="chat" >
+
+    <div class="chat-message-box">
+
+      Not yet Connected :/
+
+    </div>
+    <textarea disabled> </textarea>
+</div>
+
+
+
+<script defer>
+    var socketIourl = 'http://rarcoo.synology.me:3001/socket.io/socket.io.js'
+
+    chatFunction = function(){
+
+        console.log("entering chat function")
+        var name = "<%= current_user.username %>";
+        var socket;
+        var textarea = $('.chat textarea');
+        var messagebox = $('.chat-message-box')
+
+        messagebox[0].innerHTML='';
+        textarea.removeProp('disabled');
+
+        try {
+
+            socket = io.connect('http://rarcoo.synology.me:3001');
+
+        } catch (err) {
+
+            console.log(err);
+
+        }
+
+
+        if(socket !== undefined){
+
+            socket.on('output',function(data){
+
+                //console.log(data);
+
+                messagebox.append('<p><span class ="chat-userName">'+data.name+':</span>  '+data.text+'</p>');
+                messagebox.animate({ scrollTop: 2000 },messagebox.height);
+
+            })
+
+            textarea.keyup(function(e){
+
+                if(e.which == 13 && e.shiftKey == false){
+
+                    e.preventDefault();
+
+                    var data = this.value.slice(0,-1);
+                    this.value='';
+                    if (data.length!=0 && !data.match(/^\s*$/)){
+
+                        //console.log({ name:name , text:data})
+                        socket.emit('chat-input',{ name:name , text:data})
+
+                    }
+                }
+
+            })
+
+        } else {
+
+            console.log('undefined socket');
+
+        }
+
+    }
+
+    scriptGetter = function(){
+
+        $.getScript(socketIourl)
+                .done(function(){
+
+                    console.log('dynamicaly loaded')
+                    chatFunction();
+
+                })
+                .fail(function(){
+                    console.log(" Failed To load Script.. Retrying")
+                    setTimeout(function(){ scriptGetter(); },500)
+                })
+
+    }
+
+    scriptGetter();
+
+</script>

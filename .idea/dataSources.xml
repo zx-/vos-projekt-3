@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="3506183344">
+    <data-source source="LOCAL" name="Rails vos-projekt-3: development" uuid="b3ffba6c-5b98-4702-a615-fbb378e63566">
+      <driver-ref>postgresql</driver-ref>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://127.0.0.1:5432/vos-projekt-3_development</jdbc-url>
+      <user-name>vos2</user-name>
+      <user-password>df9bdf98df99df9edf9fdf9c</user-password>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Rails vos-projekt-3: test" uuid="6c3d2779-3e4e-4a82-ab88-fd3e85be510f">
+      <driver-ref>postgresql</driver-ref>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql:vos-projekt-3_test</jdbc-url>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="Rails vos-projekt-3: production" uuid="79486775-e1df-40ed-8925-94a85aaf69e4">
+      <driver-ref>postgresql</driver-ref>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql:vos-projekt-3_production</jdbc-url>
+      <user-name>vos-projekt-3</user-name>
+      <user-password>df96df8fdf97df8adfefdfe4dffcdff1df8ddffcdfe5dff9df87dffadff8dfe5dfe0dfefdfe1dffedf87df99dff5dfeedfebdffedfebdfe8dfebdff9dfefdff5dffadfebdff9dff9dffddfe5dff8dfeedf8ddff7df8adf8fdf94</user-password>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+

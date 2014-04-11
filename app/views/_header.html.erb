@@ -1,0 +1,19 @@
+<h1> Vos projekt </h1>
+<nav>
+
+  <li> <%= link_to "Home", welcome_index_path %></li>
+  <li> <%= link_to "Chat", chat_path %> </li>
+
+  <% if user_signed_in? %>
+  <%= current_user.username %>
+
+  <li> <%= link_to "Logout",  destroy_user_session_path, :method => :delete %> </li>
+  <li><%= link_to "Profile", edit_user_registration_path %></li>
+  <% else %>
+
+  <li> <%= link_to "Sign in", new_user_session_path %> </li>
+  <%= link_to "Sign up", new_user_registration_path %>
+
+  <%end %>
+
+</nav>
