@@ -2,23 +2,84 @@
  * Created by z on 11.4.2014.
  */
 
+var pg = require('pg');
+var pg_server = 'postgres://vos2:123456@localhost:5432/vos-projekt-3_development';
 
-var client = require('socket.io').listen(3001).sockets;
+var io_client = require('socket.io').listen(3001).sockets;
 
-client.on('connection',function(socket){
+pg.connect(pg_server, function(err,pg_client,done){
 
-    socket.on('chat-input',function(data){
+    if(err) {
+        return console.error('error fetching client from pool', err);
+    }
 
-        console.log(data);
-        client.emit('output',data);
+    io_client.on('connection',function(socket){
 
-    })
 
-    console.log(' New connection why u no work');
+        console.log("connected")
 
-    socket.on('error', function (err) {
-        console.log("Socket.IO Error");
-        console.log(err.stack); // this is changed from your code in last comment
+        socket.on('fetch-all-posts-request',function(data){
+
+            pg_client.query(
+
+                'SELECT "userName" as "name","text" FROM chat_posts WHERE room=$1',
+                [data.room],
+                function(err,result){
+
+                    if(!err){
+
+                        socket.emit('fetch-all-posts-output',result.rows);
+
+                    } else {
+
+                        console.log(err);
+
+                    }
+
+                }
+
+            );
+
+        });
+
+
+        socket.on('chat-input',function(data){
+
+            console.log(data);
+
+            if(!data.name.match(/^\s*$/) && !data.text.match(/^\s*$/)){
+
+                io_client.emit('output',data);
+                pg_client.query(
+                    'INSERT INTO chat_posts ( "userName" , "text" , "room" ) VALUES($1,$2,$3)',
+                    [data.name,data.text,data.room],
+                    function (err, result) {
+                        if(err) console.log(err);
+                        //console.log(result);
+                    }
+                );
+
+            }
+
+
+        });
+
+        console.log(' New connection why u no work');
+
+        socket.on('error', function (err) {
+
+            console.log("Socket.IO Error");
+            console.log(err.stack); // this is changed from your code in last comment
+            done();
+
+        });
+
+        socket.on('disconnect',function(){
+
+            done();
+
+        });
+
     });
 
-})
+});

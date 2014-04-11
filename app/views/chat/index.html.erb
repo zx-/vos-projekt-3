@@ -37,14 +37,28 @@
 
         if(socket !== undefined){
 
+            socket.emit('fetch-all-posts-request',{room:1});
+
+            socket.on('fetch-all-posts-output', function(data){
+
+                for(i=0;i<data.length;i++){
+
+                    messagebox.append('<p><span class ="chat-userName">'+data[i].name+':</span>  '+data[i].text+'</p>');
+
+                }
+
+                messagebox.animate({ scrollTop: 2000 },messagebox.height);
+
+            });
+
             socket.on('output',function(data){
 
-                //console.log(data);
+                console.log(data);
 
                 messagebox.append('<p><span class ="chat-userName">'+data.name+':</span>  '+data.text+'</p>');
                 messagebox.animate({ scrollTop: 2000 },messagebox.height);
 
-            })
+            });
 
             textarea.keyup(function(e){
 
@@ -56,8 +70,8 @@
                     this.value='';
                     if (data.length!=0 && !data.match(/^\s*$/)){
 
-                        //console.log({ name:name , text:data})
-                        socket.emit('chat-input',{ name:name , text:data})
+                        console.log({ name:name , text:data});
+                        socket.emit('chat-input',{ name:name , text:data, room:1});
 
                     }
                 }
