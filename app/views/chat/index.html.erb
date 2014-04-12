@@ -1,4 +1,5 @@
-<div class="chat" >
+<h1>Vos Chat:</h1>
+<div class="chat container" >
 
     <div class="chat-message-box">
 
@@ -45,7 +46,7 @@
                 console.log('init fetch: '+data.length);
                 for(i=data.length-1;i>=0;i--){
 
-                    messagebox.append('<p><span class ="chat-userName">'+data[i].name+':</span>  '+data[i].text+'</p>');
+                    messagebox.append('<div><span class ="chat-userName">'+data[i].name+':</span><p class="">'+data[i].text+'</p></div>');
 
                 }
 
@@ -57,7 +58,7 @@
 
                 console.log(data);
 
-                messagebox.append('<p><span class ="chat-userName">'+data.name+':</span>  '+data.text+'</p>');
+                messagebox.append('<div><span class ="chat-userName">'+data.name+':</span><p class="">'+data.text+'</p></div>');
                 messagebox.animate({ scrollTop: 2000 },messagebox.height);
 
             });

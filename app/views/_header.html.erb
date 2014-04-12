@@ -1,19 +1,35 @@
-<h1> Vos projekt </h1>
-<nav>
+<header class="row" id="app-header">
 
-  <li> <%= link_to "Home", welcome_index_path %></li>
-  <li> <%= link_to "Chat", chat_path %> </li>
+  <h1 class="col-md-3" > Vos projekt </h1>
 
-  <% if user_signed_in? %>
-  <%= current_user.username %>
+  <nav class="col-md-5" id="app-navbar">
 
-  <li> <%= link_to "Logout",  destroy_user_session_path, :method => :delete %> </li>
-  <li><%= link_to "Profile", edit_user_registration_path %></li>
-  <% else %>
+    <ul class="nav nav-pills">
+      <li><%= link_to "Home", welcome_index_path %></li>
+      <li><%= link_to "Vos Chat", chat_path %></li>
 
-  <li> <%= link_to "Sign in", new_user_session_path %> </li>
-  <%= link_to "Sign up", new_user_registration_path %>
+      <% if user_signed_in? %>
 
-  <%end %>
+          <li class="dropdown">
 
-</nav>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <%= current_user.username %> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><%= link_to "Edit Profile", edit_user_registration_path %></li>
+              <li> <%= link_to "Logout", destroy_user_session_path, :method => :delete %> </li>
+            </ul>
+
+          </li>
+
+      <% else %>
+
+          <li> <%= link_to "Sign in", new_user_session_path %> </li>
+          <li><%= link_to "Sign up", new_user_registration_path %></li>
+
+      <% end %>
+
+    </ul>
+
+  </nav>
+</header>
