@@ -37,11 +37,13 @@
 
         if(socket !== undefined){
 
+            console.log("fetch-all-posts-request")
             socket.emit('fetch-all-posts-request',{room:1});
 
             socket.on('fetch-all-posts-output', function(data){
 
-                for(i=0;i<data.length;i++){
+                console.log('init fetch: '+data.length);
+                for(i=data.length-1;i>=0;i--){
 
                     messagebox.append('<p><span class ="chat-userName">'+data[i].name+':</span>  '+data[i].text+'</p>');
 

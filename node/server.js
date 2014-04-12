@@ -20,15 +20,19 @@ pg.connect(pg_server, function(err,pg_client,done){
 
         socket.on('fetch-all-posts-request',function(data){
 
+            console.log("fetch-all-posts-request");
+
             pg_client.query(
 
-                'SELECT "userName" as "name","text" FROM chat_posts WHERE room=$1',
+                'SELECT "userName" as "name","text" FROM chat_posts WHERE room=$1 ORDER BY "id" DESC LIMIT 15',
                 [data.room],
                 function(err,result){
 
                     if(!err){
 
                         socket.emit('fetch-all-posts-output',result.rows);
+                        console.log('fetch-all-posts-output results rows')
+                        console.log(result.rows);
 
                     } else {
 
@@ -70,13 +74,13 @@ pg.connect(pg_server, function(err,pg_client,done){
 
             console.log("Socket.IO Error");
             console.log(err.stack); // this is changed from your code in last comment
-            done();
+            //done();
 
         });
 
         socket.on('disconnect',function(){
 
-            done();
+            //done();
 
         });
 
