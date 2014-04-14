@@ -21,6 +21,7 @@
         var socket;
         var textarea = $('.chat textarea');
         var messagebox = $('.chat-message-box')
+        var room = <%= @room %>
 
         messagebox[0].innerHTML='';
         textarea.removeProp('disabled');
@@ -39,7 +40,7 @@
         if(socket !== undefined){
 
             console.log("fetch-all-posts-request")
-            socket.emit('fetch-all-posts-request',{room:1});
+            socket.emit('fetch-all-posts-request',{room:room});
 
             socket.on('fetch-all-posts-output', function(data){
 
@@ -74,7 +75,7 @@
                     if (data.length!=0 && !data.match(/^\s*$/)){
 
                         console.log({ name:name , text:data});
-                        socket.emit('chat-input',{ name:name , text:data, room:1});
+                        socket.emit('chat-input',{ name:name , text:data, room:room});
 
                     }
                 }

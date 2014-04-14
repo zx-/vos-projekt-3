@@ -4,6 +4,8 @@ class ChatController < ApplicationController
 
   def index
 
+    @room=params[:room];
+
   end
 
 end
