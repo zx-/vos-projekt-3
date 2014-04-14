@@ -30,8 +30,10 @@ pg.connect(pg_server, function(err,pg_client,done){
 
                     if(!err){
 
+                        socket.join('room-'+data.room)
                         socket.emit('fetch-all-posts-output',result.rows);
                         console.log('fetch-all-posts-output results rows')
+                        console.log('socket joining: '+ 'room-'+data.room)
                         console.log(result.rows);
 
                     } else {
@@ -53,7 +55,8 @@ pg.connect(pg_server, function(err,pg_client,done){
 
             if(!data.name.match(/^\s*$/) && !data.text.match(/^\s*$/)){
 
-                io_client.emit('output',data);
+                socket.emit('output',data);
+                socket.broadcast.to('room-'+data.room).emit('output',data);
                 pg_client.query(
                     'INSERT INTO chat_posts ( "userName" , "text" , "room" ) VALUES($1,$2,$3)',
                     [data.name,data.text,data.room],
@@ -62,6 +65,9 @@ pg.connect(pg_server, function(err,pg_client,done){
                         //console.log(result);
                     }
                 );
+
+                console.log("Room logs: " +'room-'+data.room)
+                //console.log(io_client.clients('room-'+data.room))
 
             }
 
