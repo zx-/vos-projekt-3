@@ -1,6 +1,9 @@
 
+<h1>Available rooms</h1>
 <ul>
 <% @rooms.each do |room| %>
     <li><%= link_to room.name, chat_room_path(room.id,room.name)  %></li>
 <% end %>
 </ul>
+
+<%= link_to "Create new Room", new_chat_room_path %>
