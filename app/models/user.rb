@@ -8,7 +8,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :chat_rooms
+  has_many :room_rights
+  has_many :chat_rooms, :through => :room_rights
+  has_many :chat_posts
+
 
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup

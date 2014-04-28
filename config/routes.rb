@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'welcome#index'
 
-  get '/chat/:room', to: 'chat#index', as: 'chat'
+  get '/chat/', to: 'chat#index', as: 'chat'
+  get '/chat/:id/:name', to: 'chat#room', as: 'chat_room'
+  resources :chat_rooms
+
   #root :to => 'welcome#index'
 
   # Example of regular route:
