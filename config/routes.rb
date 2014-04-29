@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
   get '/chat/', to: 'chat_rooms#index', as: 'chat'
   get '/chat/:id/:name', to: 'chat_rooms#room', as: 'chat_room'
+  get '/chat/control/:id/:name', to: 'chat_rooms#controls', as: 'chat_room_control'
+  post '/chat/control/:id/:name', to: 'chat_rooms#addUserToRoom'
   resources :chat_rooms
 
   #root :to => 'welcome#index'
