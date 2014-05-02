@@ -3,34 +3,70 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 .chat{
 
+  width:320px;
+  height: 320px;
+  cursor: move;
+
 }
+.chat > span {
+
+  position: absolute;
+  top : 0;
+  right: 0;
+  transform:rotate(-90deg);
+  -ms-transform:rotate(-90deg); /* IE 9 */
+  -webkit-transform:rotate(-90deg); /* Opera, Chrome, and Safari */
+
+}
+
+#chat-box {
+
+  position:absolute;
+  bottom:10px;
+  right:10px;
+
+}
+
+  #chat-box h4{
+
+    margin-left: 15px;
+
+  }
 
 .chat textarea{
 
-  width : 100%;
-
-}
-
-.chat-userName {
-
-  padding-top: 5px;
-  color: green;
-  display:block;
-  float: left;
-  margin-right: 1.5%;
+  display: block;
+  width: 100%;
+  width: calc( 100% - 4px);
+  height : 20%;
+  height : calc(20% - 4px);
+  resize: none;
+  margin:2px;
 
 }
 
 .chat-message-box{
 
   overflow-y: scroll;
-  height: 500px;
+  height: calc(74% - 4px - 20px);
+  margin-top: 2px;
+  padding: 8px;
 
 }
   .chat-message-box div{
 
     clear: both;
     width:95%;
+
+  }
+
+  .chat-userName {
+
+    padding-top: 5px;
+    color: green;
+    display:block;
+    float: left;
+    margin-right: 1.5%;
 
   }
 

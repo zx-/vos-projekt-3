@@ -12,8 +12,14 @@
  *
  *= require_tree .
  *= require_self
+ *= require jquery.ui.all
  */
-//@import "font-awesome";
+
+body {
+
+  background-color: #fafafa;
+
+}
 
 #app-navbar{
 

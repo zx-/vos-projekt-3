@@ -16,7 +16,7 @@ class ChatRoomsController < ApplicationController
       redirect_to chat_path
     else
 
-      @messages = ChatPost.last(15)
+      @messages = @room.chat_posts.last(15)
 
 
     end

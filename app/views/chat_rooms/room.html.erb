@@ -1,60 +1,79 @@
 <h1><%= @room.name %></h1>
 
-<div class="chat container" >
+<div class="chat ui-widget-content" id="chat-box">
+
+  <h4>Chat:</h4><span class="ui-icon ui-icon-grip-diagonal-se"></span>
 
   <div class="chat-message-box">
 
-    <% @messages.each do |msg| %>
-    <div><span class ="chat-userName"><%= msg.userName %>:</span><p class=""><%= msg.text %></p></div>
-    <% end %>
+      <% @messages.each do |msg| %>
+      <div><span class ="chat-userName"><%= msg.userName %>:</span><p class=""><%= msg.text %></p></div>
+        <% end %>
   </div>
   <textarea disabled> </textarea>
+
 </div>
 
 
-<%= link_to "Room control", chat_room_control_path(@room.id,@room.name) %><br>
-<%= link_to "Back to rooms", chat_path  %>
+<%= link_to raw('<i class="fa fa-wrench"></i> Room control'), chat_room_control_path(@room.id,@room.name) %><br>
+<%= link_to raw('<i class="fa fa-angle-double-left"></i> Back to rooms'), chat_path  %>
 
 
 
 <script>
 
-    var dispatcher = new WebSocketRails('rarcoo.synology.me:3000/websocket');
-    var channel = dispatcher.subscribe(<%= @room.id %>);
-    var textarea = $('.chat textarea');
-    var messagebox = $('.chat-message-box')
+    $(function(){
 
-    dispatcher.on_open = function(data) {
-        console.log('Connection has been established: ', data);
-        textarea.removeProp('disabled');
-    }
+        // GUI
 
-    channel.bind('message_broadcast', function(data) {
+        $( "#chat-box" ).resizable({
 
-        console.log('Message recieved: ' + data);
-        messagebox.append('<div><span class ="chat-userName">'+data.userName+':</span><p class="">'+data.text+'</p></div>');
+            minHeight: 320,
+            minWidth: 320
+
+        }).draggable();
+
+        var dispatcher = new WebSocketRails('rarcoo.synology.me:3000/websocket');
+        var channel = dispatcher.subscribe(<%= @room.id %>);
+        var textarea = $('.chat textarea');
+        var messagebox = $('.chat-message-box')
+
         messagebox.animate({ scrollTop: 2000 },messagebox.height);
 
-
-    });
-
-    textarea.keyup(function(e){
-
-        if(e.which == 13 && e.shiftKey == false){
-
-            e.preventDefault();
-
-            var data = this.value.slice(0,-1);
-            this.value='';
-            if (data.length!=0 && !data.match(/^\s*$/)){
-
-                console.log({ name:name , text:data});
-                dispatcher.trigger('chat.submit_message', {room_id:<%= @room.id %>,text:data});
-
-            }
+        dispatcher.on_open = function(data) {
+            console.log('Connection has been established: ', data);
+            textarea.removeProp('disabled');
         }
 
+        channel.bind('message_broadcast', function(data) {
+
+            console.log('Message recieved: ' + data);
+            messagebox.append('<div><span class ="chat-userName">'+data.userName+':</span><p class="">'+data.text+'</p></div>');
+            messagebox.animate({ scrollTop: 2000 },messagebox.height);
+
+
+        });
+
+        textarea.keyup(function(e){
+
+            if(e.which == 13 && e.shiftKey == false){
+
+                e.preventDefault();
+
+                var data = this.value.slice(0,-1);
+                this.value='';
+                if (data.length!=0 && !data.match(/^\s*$/)){
+
+                    console.log({ name:name , text:data});
+                    dispatcher.trigger('chat.submit_message', {room_id:<%= @room.id %>,text:data});
+
+                }
+            }
+
+        })
+
     })
+
 
     //dispatcher.trigger('chat.submit_message', object_to_send);
 

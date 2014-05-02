@@ -20,4 +20,4 @@
     </p>
 <% end %>
 
-<%= link_to "Back to room #{@room.name}", chat_room_path(@room.id,@room.name)%>
+<%= link_to raw("<i class='fa fa-angle-double-left'></i> Back to room #{@room.name}"), chat_room_path(@room.id,@room.name)%>
