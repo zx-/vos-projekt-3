@@ -12,7 +12,7 @@ class ChatSocketController < WebsocketRails::BaseController
 
     puts "message submmited #{message}"
     room_id = message[:room_id]
-    if check_room_rights(room_id)
+    if 1check_room_rights(room_id)
 
       post = ChatPost.new(chat_room_id:room_id,user_id:current_user.id,userName:current_user.username,text:message[:text])
 

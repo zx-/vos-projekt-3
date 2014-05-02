@@ -3,7 +3,7 @@ class CreateWebResources < ActiveRecord::Migration
     create_table :web_resources do |t|
       t.text :url
       t.integer :type
-      t.binary :image
+      t.text :image
       t.text :html_original
       t.text :html_edited
 

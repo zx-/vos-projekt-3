@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140430154256) do
+ActiveRecord::Schema.define(version: 20140502150630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,13 @@ ActiveRecord::Schema.define(version: 20140430154256) do
   end
 
   add_index "chat_posts", ["room"], name: "index_chat_posts_on_room", using: :btree
+
+  create_table "chat_room_web_resources", force: true do |t|
+    t.integer  "web_resource_id"
+    t.integer  "chat_room_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "chat_rooms", force: true do |t|
     t.datetime "created_at"
@@ -64,11 +71,11 @@ ActiveRecord::Schema.define(version: 20140430154256) do
   create_table "web_resources", force: true do |t|
     t.text     "url"
     t.integer  "type"
-    t.binary   "image"
     t.text     "html_original"
     t.text     "html_edited"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "image"
   end
 
 end
