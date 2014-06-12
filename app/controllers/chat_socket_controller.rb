@@ -12,19 +12,33 @@ class ChatSocketController < WebsocketRails::BaseController
 
     puts "message submmited #{message}"
     room_id = message[:room_id]
-    if 1check_room_rights(room_id)
 
-      post = ChatPost.new(chat_room_id:room_id,user_id:current_user.id,userName:current_user.username,text:message[:text])
+    post = ChatPost.new(chat_room_id:room_id,user_id:current_user.id,userName:current_user.username,text:message[:text])
 
-      if post.save
+    if post.save
 
         WebsocketRails[room_id].trigger(:message_broadcast, {userName:post.userName,text:post.text})
 
-      end
+    end
 
+
+
+  end
+
+  def authorize_channels
+    # The channel name will be passed inside the message Hash
+
+   # WebsocketRails[message[:channel]].make_private
+    #channel = WebsocketRails[message[:channel]]
+
+    if check_room_rights(message[:channel])
+      accept_channel current_user
+    else
+      deny_channel({:reason => 'You shall not pass!'})
     end
 
   end
+
 
   private
 

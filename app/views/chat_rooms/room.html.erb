@@ -14,6 +14,40 @@
 
 </div>
 
+<div class="ui-widget-content" id="resourceContainer">
+
+  <ul id="resourceList">
+
+    <% @resources.each do |resource| %>
+        <li>
+
+          <a href="#">
+
+            <%= image_tag resource[:image], class:"resource_image" %>
+            <h5><%= resource[:title]? resource[:title] : resource[:url] %></h5>
+            <h5><%= resource[:added_by] %></h5>
+
+          </a>
+
+        </li>
+    <% end %>
+
+  </ul>
+
+  <%= form_for :web_resource, url: "chat_rooms#add_resource", remote: true, html:{id:"addResourceToroom"} do |f| %>
+      <p>
+        <%= f.label :url, "url"%><br>
+        <%= f.text_field :url %>
+      </p>
+
+      <p>
+        <%= f.submit "Add resource", remote:true %>
+      </p>
+  <% end %>
+
+
+</div>
+
 
 <%= link_to raw('<i class="fa fa-wrench"></i> Room control'), chat_room_control_path(@room.id,@room.name) %><br>
 <%= link_to raw('<i class="fa fa-angle-double-left"></i> Back to rooms'), chat_path  %>
@@ -24,7 +58,26 @@
 
     $(function(){
 
+        $("#addResourceToroom").on("ajax:success", function(e, data, status, xhr) {
+
+
+            if(data.data){
+
+                $("#resourceList").append(data.data)
+
+            }
+            console.log(data)
+
+        }).on("ajax:error", function(e, xhr, status, error){
+
+            console.log(error);
+
+        })
+
+
         // GUI
+
+        $( "#resourceContainer" ).resizable({minWidth:165}).draggable();
 
         $( "#chat-box" ).resizable({
 
@@ -34,7 +87,30 @@
         }).draggable();
 
         var dispatcher = new WebSocketRails('rarcoo.synology.me:3000/websocket');
-        var channel = dispatcher.subscribe(<%= @room.id %>);
+        var channel = dispatcher.subscribe_private(<%= @room.id %>);
+
+        channel.on_success = function(data) {
+            console.log( "Joined channel ");
+            console.log(data)
+            textarea.removeProp('disabled');
+
+            channel.bind('message_broadcast', function(data) {
+
+                console.log('Message recieved: ' + data);
+                messagebox.append('<div><span class ="chat-userName">'+data.userName+':</span><p class="">'+data.text+'</p></div>');
+                messagebox.animate({ scrollTop: 2000 },messagebox.height);
+
+
+            });
+
+        }
+
+        channel.on_failure = function(reason) {
+            console.log( "Authorization failed because " + reason.message );
+        }
+
+
+
         var textarea = $('.chat textarea');
         var messagebox = $('.chat-message-box')
 
@@ -42,17 +118,8 @@
 
         dispatcher.on_open = function(data) {
             console.log('Connection has been established: ', data);
-            textarea.removeProp('disabled');
         }
 
-        channel.bind('message_broadcast', function(data) {
-
-            console.log('Message recieved: ' + data);
-            messagebox.append('<div><span class ="chat-userName">'+data.userName+':</span><p class="">'+data.text+'</p></div>');
-            messagebox.animate({ scrollTop: 2000 },messagebox.height);
-
-
-        });
 
         textarea.keyup(function(e){
 

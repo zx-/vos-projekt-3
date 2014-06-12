@@ -1,7 +1,7 @@
 <h1>Controls : <%=@room.name %></h1>
 
 <h4>Users that can access this room</h4>
-<ul>
+<ul id="user_list">
   <% @users.each do |user| %>
       <li><%= user.username  %></li>
   <% end %>
@@ -9,15 +9,33 @@
 
 <h4>add new user</h4>
 
-<%= form_for :room_right, url: "chat_rooms#addUserToRoom" do |f| %>
+<%= form_for :room_right, url: "chat_rooms#addUserToRoom", remote: true, html:{id:"addUserToRoom"} do |f| %>
     <p>
       <%= f.label :username, "Username or email"%><br>
       <%= f.text_field :username %>
     </p>
 
     <p>
-      <%= f.submit "Add user to room" %>
+      <%= f.submit "Add user to room", remote:true %>
     </p>
 <% end %>
 
 <%= link_to raw("<i class='fa fa-angle-double-left'></i> Back to room #{@room.name}"), chat_room_path(@room.id,@room.name)%>
+
+<script>
+
+
+
+
+      $("#addUserToRoom").on("ajax:success", function(e, data, status, xhr) {
+
+        $("#user_list").append("<li>"+data.name+"</li>")
+        console.log(data)
+
+      }).on("ajax:error", function(e, xhr, status, error){
+
+          console.log(error);
+
+      })
+
+</script>

@@ -1,6 +1,40 @@
 // Place all the styles related to the Chat controller here.
 // They will automatically be included in application.css.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+#resourceContainer{
+
+  width:10%;
+  float:left;
+  clear:both;
+  min-width: 165px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+}
+#resourceContainer form {
+
+  margin:5px;
+
+}
+
+  #resourceContainer ul{ padding:5px; }
+  #resourceContainer ul li{
+
+    display:block;
+    list-style-type: none;
+    padding:10px;
+    border: 1px solid black;
+
+  }
+    #resourceContainer ul li a{ display:block}
+
+.resource_image{
+
+  max-width: 100%;
+  height:auto;
+
+}
+
 .chat{
 
   width:320px;

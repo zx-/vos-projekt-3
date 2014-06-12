@@ -15,14 +15,17 @@ class WebResource < ActiveRecord::Base
     begin
 
       doc = Nokogiri::HTML(open(url))
+      puts "nokogiri passed"
       image = ImageCreator.image_from_url(url)
+      puts "image created"
 
       if image && doc
 
         resource = WebResource.new(
             url:url,
             image:image,
-            html_original:doc.to_s
+            html_original:doc.to_s,
+            title:doc.title
         )
 
         resource.save
@@ -43,7 +46,7 @@ class WebResource < ActiveRecord::Base
   private
 
   def self.clean_url (url)
-
+    url = url.strip
     if !(url =~ /^(http):\/\//)
 
       return "http://#{url}"

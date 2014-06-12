@@ -3,6 +3,7 @@ class ImageCreator
   def self.image_from_url(url)
 
     url = url.gsub(/^http:\/\//,'')
+    url = url.gsub(/\//,'')
 
     if url !="" && system("cutycapt --url=#{url} --out=app/assets/images/#{url}.png")
 

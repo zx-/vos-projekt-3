@@ -1,6 +1,7 @@
 class ChatRoomWebResource < ActiveRecord::Base
 
-  has_many :chat_rooms,
-  has_many :web_resources
+  belongs_to :chat_room
+  belongs_to :web_resource
+  belongs_to :user
 
 end
