@@ -90,7 +90,7 @@ class ChatRoomsController < ApplicationController
       roomRight = RoomRight.new(:chat_room_id => room.id, :user_id => user.id)
       roomRight.save
       if request.xhr?
-        render json: {name:user.username}
+        render json: {name:user.username, found:true}
       else
         redirect_to chat_room_control_path(room.id,room.name)
       end
@@ -98,7 +98,7 @@ class ChatRoomsController < ApplicationController
     else
 
       if request.xhr?
-        render json: {name:nil}
+        render json: {name:chat_room_add_user_params[:username], found:false}
       else
         redirect_to chat_room_control_path(room.id,room.name)
       end

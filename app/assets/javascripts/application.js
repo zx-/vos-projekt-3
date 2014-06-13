@@ -14,8 +14,9 @@
 //= require jquery_ujs
 //= require jquery.ui.all
 //= require turbolinks
-//= require_tree .
 //= require websocket_rails/main
+//= require_tree ./helpers
+//= require_tree ./room
 
 
 

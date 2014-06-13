@@ -29,8 +29,14 @@
 
       $("#addUserToRoom").on("ajax:success", function(e, data, status, xhr) {
 
-        $("#user_list").append("<li>"+data.name+"</li>")
-        console.log(data)
+        if(data.found) {
+            $("#user_list").append("<li>" + data.name + "</li>")
+            APP.messages.showSuccess("User '"+data.name+"' added",2500)
+        } else {
+
+            APP.messages.showAlert("User '"+data.name+"' not found or already added",2500);
+
+        }
 
       }).on("ajax:error", function(e, xhr, status, error){
 
