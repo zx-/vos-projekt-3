@@ -4,7 +4,10 @@
 #resourceContainer{
 
   width:10%;
-  float:left;
+  position:absolute;
+  left:10px;
+  top: 10px;
+  height:calc( 100% - 20px);
   clear:both;
   min-width: 165px;
   overflow-x: hidden;
@@ -27,6 +30,22 @@
 
   }
     #resourceContainer ul li a{ display:block}
+
+#resource-input-url{
+
+  margin:10px;
+
+}
+#resource-add-button{
+
+  margin:0px 10px 10px 10px;
+
+}
+#resourceContainer > p{
+
+  margin:10px;
+
+}
 
 .resource_image{
 
@@ -115,3 +134,16 @@
 
   }
 
+#room-menu{
+
+  text-align : center;
+  list-style: none;
+
+}
+#room-menu li{
+  display:inline-block;
+}
+#room-menu li > *{
+  display:inline-block;
+  padding:10px;
+}

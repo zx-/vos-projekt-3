@@ -44,11 +44,18 @@ APP.messages = (function($){
 
     }
 
+    function infoMessage(text,time){
+
+        showMessage("info","Info!",text,time);
+
+    }
+
 
     return {
 
         showAlert: alertMessage,
-        showSuccess: successMessage
+        showSuccess: successMessage,
+        showInfo: infoMessage
 
     }
 

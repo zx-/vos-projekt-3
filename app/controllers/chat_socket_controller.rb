@@ -17,11 +17,29 @@ class ChatSocketController < WebsocketRails::BaseController
 
     if post.save
 
-        WebsocketRails[room_id].trigger(:message_broadcast, {userName:post.userName,text:post.text})
+      WebsocketRails[room_id].trigger(:message_broadcast, {userName:post.userName,text:post.text})
 
     end
 
 
+
+  end
+
+  def add_web_resource
+
+    result = true;
+    room_id = message[:room_id]
+    WebsocketRails[room_id].trigger(:add_web_resource_broadcast, message)
+
+    if result
+
+      send_message :add_web_resource_confirmation,{success:true}
+
+    else
+
+      send_message :add_web_resource_confirmation,{success:false,message:"i dont know man"}
+
+    end
 
   end
 

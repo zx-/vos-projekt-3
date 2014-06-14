@@ -5,16 +5,13 @@ var APP = APP || {};
 
 APP.socket = (function($){
 
-    var dispatcher,channel,textarea,messagebox;
+    var dispatcher,channel;
+    var onSuc = [];
 
-    function init(room_id,t_area,msg_box){
+    function init(room_id){
 
-        textarea = t_area;
-        messagebox = msg_box;
 
-        messagebox.animate({ scrollTop: 2000 },messagebox.height);
-
-        dispatcher = new WebSocketRails('rarcoo.synology.me:3000/websocket');
+        dispatcher = new WebSocketRails('92.52.37.138:3000/websocket');
         channel = dispatcher.subscribe_private(room_id);
         channel.on_success = successful_connection;
         channel.on_failure = failed_connection;
@@ -23,41 +20,17 @@ APP.socket = (function($){
             console.log('Connection has been established: ', data);
         }
 
-        textarea.keyup(textAreaEvent);
-
     }
 
-    function textAreaEvent(e){
 
-        if(e.which == 13 && e.shiftKey == false){
-
-            e.preventDefault();
-
-            var data = this.value.slice(0,-1);
-            this.value='';
-            if (data.length!=0 && !data.match(/^\s*$/)){
-
-                dispatcher.trigger('chat.submit_message', {room_id:room_id,text:data});
-
-            }
-        }
-
-    }
 
     function successful_connection(data){
 
         console.log( "Joined channel ");
-        console.log(data)
-        textarea.removeProp('disabled');
+        console.log(data);
 
-        channel.bind('message_broadcast', function(data) {
-
-            console.log('Message recieved: ' + data);
-            messagebox.append('<div><span class ="chat-userName">'+data.userName+':</span><p class="">'+data.text+'</p></div>');
-            messagebox.animate({ scrollTop: 2000 },messagebox.height);
-
-
-        });
+        for(var i=0;i<onSuc.length;i++)
+            onSuc[i].call();
 
     }
 
@@ -68,9 +41,42 @@ APP.socket = (function($){
 
     }
 
+    function on_successful_connection(f){
+
+        onSuc.push(f);
+
+    }
+
+    function trigger(a,b){
+
+        dispatcher.trigger(a,b);
+
+    }
+    function bind_on_channel(a,b){
+
+        channel.bind(a,b);
+
+    }
+    function wait(){
+
+        console.log("Socket waiting for elems")
+
+    }
+
+    function bind_on_dispatcher(a,b){
+
+        dispatcher.bind(a,b);
+
+    }
+
     return {
 
-        init:init
+        trigger:trigger,
+        bind_on_channel:bind_on_channel,
+        bind_on_dispatcher:bind_on_dispatcher,
+        on_successful_connection:on_successful_connection,
+        init:init,
+        wait:wait
 
     }
 

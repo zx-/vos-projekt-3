@@ -18,8 +18,9 @@ WebsocketRails::EventMap.describe do
     subscribe :subscribe_private, :to => ChatSocketController, :with_method => :authorize_channels
   end
 
-  namespace :chat do
+  namespace :room do
     subscribe :submit_message, :to => ChatSocketController, :with_method => :submit_message
+    subscribe :add_web_resource, :to => ChatSocketController, :with_method => :add_web_resource
   end
 
 end
