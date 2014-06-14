@@ -1,3 +1,5 @@
 == Vos projekt
 
 This is project for Vos FIIT.
+
+http://mir3z.github.io/jquery.texthighlighter/
