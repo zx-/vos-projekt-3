@@ -8,6 +8,10 @@
     <li><%= link_to raw('<i class="fa fa-angle-double-left"></i> Back to rooms'), chat_path  %></li>
 </ul>
 
+<iframe id ="room-main-frame">
+
+</iframe>
+
 <div class="chat ui-widget-content" id="chat-box">
 
   <h4>Chat:</h4><span class="ui-icon ui-icon-grip-diagonal-se"></span>
@@ -80,6 +84,6 @@
    var chatbox = new ChatBox(APP.socket,room_id,$('.chat textarea'),$('.chat-message-box'));
    var resources = new WebResourcesPanel(APP.socket,room_id,$('#resourceContainer'));
    APP.socket.init(room_id);
-
+   APP.main_canvas.init($("#room-main-frame"));
 
 </script>

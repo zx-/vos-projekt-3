@@ -27,6 +27,7 @@
     list-style-type: none;
     padding:10px;
     border: 1px solid black;
+    cursor:pointer;
 
   }
     #resourceContainer ul li a{ display:block}
@@ -146,4 +147,18 @@
 #room-menu li > *{
   display:inline-block;
   padding:10px;
+}
+
+body {
+
+  height: 100%;
+
+}
+
+#room-main-frame{
+
+  width : calc(100% - 220px);
+  height: calc(100% - 60px);
+  margin-left:210px;
+
 }

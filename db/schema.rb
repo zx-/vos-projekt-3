@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140502193048) do
+ActiveRecord::Schema.define(version: 20140614130221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(version: 20140502193048) do
     t.datetime "updated_at"
     t.integer  "user_id"
   end
+
+  add_index "chat_room_web_resources", ["web_resource_id", "chat_room_id"], name: "unique_res_index", unique: true, using: :btree
 
   create_table "chat_rooms", force: true do |t|
     t.datetime "created_at"
@@ -79,5 +81,7 @@ ActiveRecord::Schema.define(version: 20140502193048) do
     t.text     "image"
     t.text     "title"
   end
+
+  add_index "web_resources", ["url"], name: "index_web_resources_on_url", using: :btree
 
 end

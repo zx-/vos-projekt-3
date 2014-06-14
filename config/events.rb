@@ -19,6 +19,7 @@ WebsocketRails::EventMap.describe do
   end
 
   namespace :room do
+    subscribe :list_all_resources, :to => ChatSocketController, :with_method => :list_all_resources
     subscribe :submit_message, :to => ChatSocketController, :with_method => :submit_message
     subscribe :add_web_resource, :to => ChatSocketController, :with_method => :add_web_resource
   end

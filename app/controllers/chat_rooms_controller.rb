@@ -19,20 +19,17 @@ class ChatRoomsController < ApplicationController
     else
 
       @messages = @room.chat_posts.last(15)
-      room_resource = @room.chat_room_web_resources
+    #  room_resource = @room.chat_room_web_resources
       @resources = []
 
-      room_resource.each do |res|
+    #  room_resource.each do |res|
 
-        @resources << {
-          added_by:res.user.username,
-          title:res.web_resource.title,
-          url:res.web_resource.url,
-          image:res.web_resource.image
-        }
-
-      end
-
+    #    @resources << {
+    #      added_by:res.user.username,
+    #      title:res.web_resource.title,
+    #      url:res.web_resource.url,
+    #      image:res.web_resource.image
+    #    }
     end
 
   end

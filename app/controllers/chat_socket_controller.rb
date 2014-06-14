@@ -25,15 +25,77 @@ class ChatSocketController < WebsocketRails::BaseController
 
   end
 
+  def list_all_resources
+
+    room_id = message[:room_id]
+
+    if numeric? room_id
+
+      resources = []
+      ChatRoomWebResource.select("*").joins(:user,:web_resource).where("chat_room_id" => room_id).each do |res|
+
+        resources << {
+          resource_id:res.web_resource.id,
+          image_url:ActionController::Base.helpers.asset_path(res.web_resource.image),
+          title:res.web_resource.title,
+          user_name:res.user.username,
+          url:res.web_resource.url,
+          html:res.web_resource.html_edited
+
+        }
+
+      end
+
+      send_message :list_all_resources_response,{data:resources}
+
+    end
+
+  end
+
   def add_web_resource
 
-    result = true;
+    result = true
     room_id = message[:room_id]
-    WebsocketRails[room_id].trigger(:add_web_resource_broadcast, message)
+    room_res = nil
 
-    if result
+    res = WebResource.add_url_resource(message[:url])
 
-      send_message :add_web_resource_confirmation,{success:true}
+
+    if res
+
+      if !ChatRoomWebResource.exists? web_resource_id:res.id,chat_room_id:room_id
+
+        room_res = ChatRoomWebResource.new(
+          web_resource_id:res.id,
+          chat_room_id:room_id,
+          user_id:current_user.id
+        )
+
+        if room_res && room_res.save
+
+          send_message :add_web_resource_confirmation,{success:true}
+          WebsocketRails[room_id].trigger(:add_web_resource_broadcast, {
+              resource_id:res.id,
+              image_url:ActionController::Base.helpers.asset_path(res.image),
+              title:res.title,
+              user_name:current_user.username,
+              url:res.url,
+              html:res.html_edited
+
+          })
+
+        else
+
+          send_message :add_web_resource_confirmation,{success:false,message:"Error while saving"}
+
+        end
+
+      else
+
+          send_message :add_web_resource_confirmation,{success:false,message:"Resource already exists"}
+
+      end
+
 
     else
 
@@ -59,6 +121,10 @@ class ChatSocketController < WebsocketRails::BaseController
 
 
   private
+
+  def numeric? (a)
+    Float(a) != nil rescue false
+  end
 
   def check_room_rights(room_id)
 

@@ -16,6 +16,7 @@ function WebResourcesPanel(socket,room_id,container){
     this.room_id = room_id;
     this.socket = socket;
     this.container = container;
+    this.resource_list = {};
     this.input = {};
     this.status = {};
 
@@ -28,6 +29,7 @@ function WebResourcesPanel(socket,room_id,container){
         this.button = $(this.container).find("#resource-add-button");
         this.input = $(this.container).find("#resource-input-url");
         this.status = $(this.container).find("#resource-input-status");
+        this.resource_list = $(this.container).find("ul");
 
         this.input_ready(false)
 
@@ -47,9 +49,13 @@ function WebResourcesPanel(socket,room_id,container){
 
         var incRes = this.incoming_web_resource.bind(this);
         var resConf = this.web_resource_confirmation.bind(this);
+        var resList = this.web_resource_list.bind(this);
 
         this.socket.bind_on_dispatcher("add_web_resource_confirmation",resConf);
         this.socket.bind_on_channel("add_web_resource_broadcast",incRes);
+        this.socket.bind_on_dispatcher("list_all_resources_response",resList);
+
+        this.socket.trigger('room.list_all_resources', {room_id:this.room_id})
 
         this.input_ready(true,"ready");
 
@@ -66,10 +72,10 @@ function WebResourcesPanel(socket,room_id,container){
 
         if ( this.url_pattern.test(url) ){
 
-            APP.messages.showSuccess("Url is being processed",2500)
+            APP.messages.showInfo("Url is being processed",2500)
             $(this.input).val("")
             this.input_ready(false,"processing resource");
-            this.socket.trigger('room.add_web_resource', {room_id:room_id,url:url})
+            this.socket.trigger('room.add_web_resource', {room_id:this.room_id,url:url})
 
         } else {
 
@@ -84,9 +90,18 @@ function WebResourcesPanel(socket,room_id,container){
         console.log("web_res_broadcast")
         console.log(data);
         APP.messages.showInfo("New resource "+data.url+" added",2500)
+        this.add_resource(data);
 
 
     }
+    this.web_resource_list = function(data){
+
+        console.log(data)
+        for(var i = 0; i<data.data.length; i++)
+            this.add_resource(data.data[i]);
+
+    }
+
     this.web_resource_confirmation = function(data){
 
         console.log("web_res_confirmation")
@@ -99,15 +114,27 @@ function WebResourcesPanel(socket,room_id,container){
         } else {
 
             this.input_ready(true,"ready")
-            APP.messages.showAlert("Resource could not be added",2500)
+            APP.messages.showAlert(data.message,2500)
 
         }
 
     }
 
-    this.add_resource = function(data,htmlElement){
+    this.add_resource = function(data){
 
-        this.resources[data.resource_id]={data:data,htmlElement:htmlElement}
+        this.resources[data.resource_id]={data:data}
+        var o = this.generateHtmlObj(data);
+        $(this.resource_list).append(o);
+
+        var func = this.res_clicked.bind(this);
+        $(o).click(function(){func(data.resource_id);})
+
+
+    }
+
+    this.res_clicked = function(id){
+
+        APP.main_canvas.displayHtml(this.resources[id].data.html)
 
     }
 
@@ -115,7 +142,7 @@ function WebResourcesPanel(socket,room_id,container){
 
         return $(
             "<li data-obj-id="+data.resource_id+">"+
-                "<img src='"+data.image_url+"' alt="+data.title+"></img>"+
+                "<img src='"+data.image_url+"' alt="+data.title+" class='resource_image'></img>"+
                 "<h5>"+data.title+"</h5>"+
                 "<h5>"+data.user_name+"</h5>"+
             "</li>"
