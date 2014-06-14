@@ -33,6 +33,10 @@ class PageParser
 
       end
 
+      if node.name == "input"
+        node.set_attribute('disabled','disabled')
+      end
+
     end
 
     puts " FINISHED"
@@ -50,7 +54,7 @@ class PageParser
 
     puts "change #{url} with #{domain}"
 
-    if url.to_s.match /^\w.*/
+    if (url.to_s.match /^\w.*/) && !(url.to_s.match /^(http(s)?):\/\// ) && !(url.to_s.match /^www\..*/)
 
       puts "to "+domain+"/"+url
       return domain+"/"+url.to_s
@@ -64,7 +68,7 @@ class PageParser
 
     end
 
-    if url.to_s.match /^\/.*/
+    if url.to_s.match /^\/[^\/]+/
 
       puts "to "+domain+url
       return domain+url.to_s

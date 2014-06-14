@@ -143,8 +143,8 @@ function WebResourcesPanel(socket,room_id,container){
         return $(
             "<li data-obj-id="+data.resource_id+">"+
                 "<img src='"+data.image_url+"' alt="+data.title+" class='resource_image'></img>"+
-                "<h5>"+data.title+"</h5>"+
-                "<h5>"+data.user_name+"</h5>"+
+                "<h5><strong>"+data.title+"</strong></h5>"+
+                "<h5>Added by '"+data.user_name+"'</h5>"+
             "</li>"
         )
 

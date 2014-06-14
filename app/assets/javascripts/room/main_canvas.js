@@ -15,6 +15,8 @@ APP.main_canvas = (function($){
         doc  = frame[0].contentWindow.document;
         body = $('body',doc);
 
+        displayHtml("<h1>Choose resource or add one!</h1>")
+
     }
 
     function displayHtml(html){

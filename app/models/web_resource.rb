@@ -69,7 +69,7 @@ class WebResource < ActiveRecord::Base
 
   def self.clean_url (url)
     url = url.strip
-    if !(url =~ /^(http(s)?):\/\//)
+    if !(url =~ /^(http(s)?):\/\// )
 
       return "http://#{url}"
 
