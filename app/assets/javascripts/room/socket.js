@@ -11,7 +11,7 @@ APP.socket = (function($){
     function init(room_id){
 
 
-        dispatcher = new WebSocketRails('92.52.37.138:3000/websocket');
+        dispatcher = new WebSocketRails(window.document.location.host+'/websocket');
         channel = dispatcher.subscribe_private(room_id);
         channel.on_success = successful_connection;
         channel.on_failure = failed_connection;
