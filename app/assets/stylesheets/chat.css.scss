@@ -26,11 +26,25 @@
     display:block;
     list-style-type: none;
     padding:10px;
-    border: 1px solid black;
+    border: 1px solid lightgrey;
+    border-bottom: none;
     cursor:pointer;
+    transition: background 0.3s ease-in-out;
+    -webkit-transition: background 0.3s ease-in-out;
+    -moz-transition: background 0.3s ease-in-out;
+    -o-transition: background 0.3s ease-in-out;
 
   }
+  #resourceContainer ul li:last-child{
+
+    border: 1px solid lightgrey;
+
+  }
+
     #resourceContainer ul li a{ display:block}
+    #resourceContainer ul li:hover {background:lightgrey}
+    #resourceContainer ul li h5 { color: #428bca}
+    #resourceContainer ul li.selected-web-resource{ background-color:aliceblue }
 
 #resource-input-url{
 
@@ -149,7 +163,7 @@
   padding:10px;
 }
 
-body {
+body,html {
 
   height: 100%;
 
@@ -162,3 +176,23 @@ body {
   margin-left:210px;
 
 }
+
+// Highlight control
+#room-highlight-controls {
+
+  vertical-align: middle;
+  position:absolute;
+  left:210px;
+  height: 23px;
+  top: 28px;
+  padding: 0 5px;
+  cursor:pointer;
+  color:#aaaaaa;
+  transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  -moz-transition: color 0.3s ease-in-out;
+  -o-transition: color 0.3s ease-in-out;
+
+}
+
+  #room-highlight-controls :hover{ color:#222222 }

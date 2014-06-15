@@ -21,7 +21,13 @@ class ChatSocketController < WebsocketRails::BaseController
 
     end
 
+  end
 
+  def web_resource_highlight
+
+    room_id = message[:room_id]
+    WebsocketRails[room_id].trigger(:highlight_web_resource_broadcast,message)
+    
 
   end
 
@@ -40,7 +46,8 @@ class ChatSocketController < WebsocketRails::BaseController
           title:res.web_resource.title,
           user_name:res.user.username,
           url:res.web_resource.url,
-          html:res.web_resource.html_edited
+          html:res.web_resource.html_edited,
+          highlights:''
 
         }
 
@@ -80,7 +87,8 @@ class ChatSocketController < WebsocketRails::BaseController
               title:res.title,
               user_name:current_user.username,
               url:res.url,
-              html:res.html_edited
+              html:res.html_edited,
+              highlights:''
 
           })
 

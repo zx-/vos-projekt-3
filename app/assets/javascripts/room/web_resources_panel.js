@@ -92,13 +92,14 @@ function WebResourcesPanel(socket,room_id,container){
         APP.messages.showInfo("New resource "+data.url+" added",2500)
         this.add_resource(data);
 
-
     }
     this.web_resource_list = function(data){
 
         console.log(data)
         for(var i = 0; i<data.data.length; i++)
             this.add_resource(data.data[i]);
+
+        APP.main_canvas.displayResource(this.resources[data.data[0].resource_id])
 
     }
 
@@ -122,10 +123,11 @@ function WebResourcesPanel(socket,room_id,container){
 
     this.add_resource = function(data){
 
-        this.resources[data.resource_id]={data:data}
+        this.resources[data.resource_id]=data;
         var o = this.generateHtmlObj(data);
-        $(this.resource_list).append(o);
+        this.resources[data.resource_id].elem = o;
 
+        $(this.resource_list).append(o);
         var func = this.res_clicked.bind(this);
         $(o).click(function(){func(data.resource_id);})
 
@@ -134,7 +136,7 @@ function WebResourcesPanel(socket,room_id,container){
 
     this.res_clicked = function(id){
 
-        APP.main_canvas.displayHtml(this.resources[id].data.html)
+        APP.main_canvas.displayResource(this.resources[id])
 
     }
 
@@ -144,7 +146,7 @@ function WebResourcesPanel(socket,room_id,container){
             "<li data-obj-id="+data.resource_id+">"+
                 "<img src='"+data.image_url+"' alt="+data.title+" class='resource_image'></img>"+
                 "<h5><strong>"+data.title+"</strong></h5>"+
-                "<h5>Added by '"+data.user_name+"'</h5>"+
+                "<p>Added by '"+data.user_name+"'</p>"+
             "</li>"
         )
 

@@ -7,8 +7,9 @@
     <li><%= link_to raw('<i class="fa fa-wrench"></i> Room control'), chat_room_control_path(@room.id,@room.name) %><br></li>
     <li><%= link_to raw('<i class="fa fa-angle-double-left"></i> Back to rooms'), chat_path  %></li>
 </ul>
+<%= render :partial => "/highlight_controls" %>
 
-<iframe id ="room-main-frame">
+<iframe id ="room-main-frame" class="ui-widget-content">
 
 </iframe>
 
@@ -84,6 +85,6 @@
    var chatbox = new ChatBox(APP.socket,room_id,$('.chat textarea'),$('.chat-message-box'));
    var resources = new WebResourcesPanel(APP.socket,room_id,$('#resourceContainer'));
    APP.socket.init(room_id);
-   APP.main_canvas.init($("#room-main-frame"));
+   APP.main_canvas.init(APP.socket,room_id,resources,$("#room-main-frame"));
 
 </script>
