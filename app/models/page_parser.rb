@@ -4,10 +4,6 @@ class PageParser
   # href zahodit, url,src zmenit
   def self.parse! doc,domain_name
 
-    puts "################################3"
-    puts "parsujeme web"
-
-
     meta_node = Nokogiri::XML::Node.new('meta',doc)
     meta_node.set_attribute('charset', 'UTF-8')
     head = doc.at_css "head"
@@ -39,10 +35,22 @@ class PageParser
 
     end
 
-    puts " FINISHED"
-    puts "################################3"
+    if domain_name.to_s.match /youtube/
+
+      #<meta name="twitter:player" content="url">
+      if el = doc.search('meta[name="twitter:player"]')[0]
+
+        return "<iframe width='95%' height='95%' src='#{el.attr('content')}' frameborder='0' allowfullscreen></iframe>"
+
+      end
+
+    end
 
     doc
+
+
+
+
 
   end
 

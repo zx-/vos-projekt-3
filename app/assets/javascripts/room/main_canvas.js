@@ -13,6 +13,7 @@ APP.main_canvas = (function($){
     var socket;
     var resources;
     var highlightEnabled = false;
+    var highlightState = 0;
 
     function init(sckt,r_id,res,frm){
 
@@ -25,6 +26,15 @@ APP.main_canvas = (function($){
 
         displayHtml("<h1>Choose resource or add one!</h1>");
 
+        $.textHighlighter.createWrapper = function(options) {
+
+            var wrapper = $('<span></span>');
+            return $(wrapper)
+                .addClass(options.highlightedClass)
+                .css('background-color', options.color);
+        };
+
+
         var initializeTextHighlighter = function() {
             var frameDocument = $(frame).contents();
             frameDocument.textHighlighter({
@@ -33,7 +43,8 @@ APP.main_canvas = (function($){
                 },
                 onBeforeHighlight:function(range){
                     return APP.main_canvas.isHighlightEnabled();
-                }
+                },
+                highlightedClass: "room-highlighted-text"
             });
         };
 
@@ -44,14 +55,40 @@ APP.main_canvas = (function($){
 
         $("#room-highlight-controls").click(function(){
 
-            highlightEnabled = !highlightEnabled;
+            highlightState = (highlightState+1)%3
+            var frameDocument = $(frame).contents();
 
-            if(highlightEnabled)
-                $(this).find('span').find('span').html("enabled");
-            else
-                $(this).find('span').find('span').html("disabled");
+            switch(highlightState){
+
+                case 0 : {
+
+                    highlightEnabled = false;
+                    $(this).find('span').find('span').html("disabled");
+                    frameDocument.find('.room-highlighted-text').css('cursor', 'initial');
+                    break;
+
+                }
+                case 1: {
+
+                    highlightEnabled = true;
+                    $(this).find('span').find('span').html("enabled");
+                    frameDocument.find('.room-highlighted-text').css('cursor', 'initial');
+                    break;
+
+                }
+                case 2: {
+
+                    highlightEnabled = false;
+                    $(this).find('span').find('span').html("remove");
+                    frameDocument.find('.room-highlighted-text').css('cursor', 'no-drop');
+                    break;
+
+                }
+
+            }
 
         })
+
 
     }
 
@@ -59,6 +96,11 @@ APP.main_canvas = (function($){
 
         var iframeHtml = $(frame).contents().find('html').get(0);
         iframeHtml.innerHTML = html;
+        $(iframeHtml).on('click','.room-highlighted-text',function(){
+
+            APP.main_canvas.removeHighlight($(this));
+
+        })
 
     }
 
@@ -69,14 +111,14 @@ APP.main_canvas = (function($){
 
         if (currentWebres != null) {
 
-            currentWebres.highlights=highlighter.serializeHighlights()
+            currentWebres.highlight=highlighter.serializeHighlights()
             highlighter.removeHighlights();
             $(currentWebres.elem).removeClass("selected-web-resource");
 
         }
         displayHtml(res.html);
-        if (res.highlights.length>0)
-            highlighter.deserializeHighlights(res.highlights);
+        if (res.highlight.length>0)
+            highlighter.deserializeHighlights(res.highlight);
 
         currentWebres = res;
         $(currentWebres.elem).addClass("selected-web-resource");
@@ -92,21 +134,21 @@ APP.main_canvas = (function($){
         socket.trigger('room.web_resource_highlight',{
             room_id:room_id,
             resource_id:currentWebres.resource_id,
-            highlights:highlighter.serializeHighlights()
+            highlight:highlighter.serializeHighlights()
         });
 
     }
 
     function receiveHighlight(msg){
 
-        resources.resources[msg.resource_id].highlights=msg.highlights;
+        resources.resources[msg.resource_id].highlight=msg.highlight;
 
         if( currentWebres.resource_id== msg.resource_id ){
 
             var frameDocument = $(frame).contents();
             var highlighter = frameDocument.getHighlighter();
             highlighter.removeHighlights();
-            highlighter.deserializeHighlights(msg.highlights);
+            highlighter.deserializeHighlights(msg.highlight);
 
         }
 
@@ -118,13 +160,27 @@ APP.main_canvas = (function($){
 
     }
 
+    function removeHighlight(elem){
+
+        if(highlightState == 2 ) {
+
+            var frameDocument = $(frame).contents();
+            var highlighter = frameDocument.getHighlighter();
+            highlighter.removeHighlights(elem);
+            textHighlighted();
+
+        }
+
+    }
+
     return {
 
         textHighlighted:textHighlighted,
         displayResource:displayResource,
         displayHtml:displayHtml,
         init:init,
-        isHighlightEnabled:isHighlightEnabled
+        isHighlightEnabled:isHighlightEnabled,
+        removeHighlight:removeHighlight
 
     }
 

@@ -28,7 +28,6 @@ function ChatBox(socket,room_id,textarea,messagebox) {
         this.textarea.keyup(this.textAreaEvent);
         this.socket.on_successful_connection(this.ready.bind(this));
 
-
     }
 
     this.ready = function(){
@@ -48,7 +47,6 @@ function ChatBox(socket,room_id,textarea,messagebox) {
         this.messagebox.animate({ scrollTop: 2000 },messagebox.height);
 
     }
-
 
 
     this.init();

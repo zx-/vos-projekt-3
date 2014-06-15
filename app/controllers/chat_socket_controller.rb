@@ -27,7 +27,10 @@ class ChatSocketController < WebsocketRails::BaseController
 
     room_id = message[:room_id]
     WebsocketRails[room_id].trigger(:highlight_web_resource_broadcast,message)
-    
+    res = ChatRoomWebResource.find_by(web_resource_id:message[:resource_id])
+    res.highlight = message[:highlight]
+    res.save
+    puts res
 
   end
 
@@ -38,7 +41,7 @@ class ChatSocketController < WebsocketRails::BaseController
     if numeric? room_id
 
       resources = []
-      ChatRoomWebResource.select("*").joins(:user,:web_resource).where("chat_room_id" => room_id).each do |res|
+      ChatRoomWebResource.includes(:user,:web_resource).where("chat_room_id" => room_id).each do |res|
 
         resources << {
           resource_id:res.web_resource.id,
@@ -47,7 +50,7 @@ class ChatSocketController < WebsocketRails::BaseController
           user_name:res.user.username,
           url:res.web_resource.url,
           html:res.web_resource.html_edited,
-          highlights:''
+          highlight:res.highlight
 
         }
 
@@ -88,7 +91,7 @@ class ChatSocketController < WebsocketRails::BaseController
               user_name:current_user.username,
               url:res.url,
               html:res.html_edited,
-              highlights:''
+              highlight:''
 
           })
 
