@@ -32,10 +32,10 @@ function WebResourcesPanel(socket,room_id,container){
         this.status = $(this.container).find("#resource-input-status");
         this.resource_list = $(this.container).find("ul");
 
+
         this.input_ready(false)
 
         this.socket.on_successful_connection(this.ready.bind(this));
-
     }
 
     this.input_ready = function(bol,msg){
