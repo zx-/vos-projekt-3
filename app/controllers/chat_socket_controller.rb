@@ -48,6 +48,7 @@ class ChatSocketController < WebsocketRails::BaseController
           image_url:ActionController::Base.helpers.asset_path(res.web_resource.image),
           title:res.web_resource.title,
           user_name:res.user.username,
+          user_id:res.user_id,
           url:res.web_resource.url,
           html:res.web_resource.html_edited,
           highlight:res.highlight
@@ -89,10 +90,10 @@ class ChatSocketController < WebsocketRails::BaseController
               image_url:ActionController::Base.helpers.asset_path(res.image),
               title:res.title,
               user_name:current_user.username,
+              user_id:current_user.id,
               url:res.url,
               html:res.html_edited,
               highlight:''
-
           })
 
         else
@@ -126,6 +127,30 @@ class ChatSocketController < WebsocketRails::BaseController
       accept_channel current_user
     else
       deny_channel({:reason => 'You shall not pass!'})
+    end
+
+  end
+
+  def remove_web_resource
+
+    room_id = message[:room_id]
+    user_id = current_user.id
+    resource_id = message[:resource_id]
+
+    res = ChatRoomWebResource.find_by(web_resource_id:resource_id)
+    puts "res u id #{ res.user_id} userid #{user_id} res #{resource_id}"
+
+    if res.user_id == user_id
+
+      puts res
+      res.destroy
+
+      WebsocketRails[room_id].trigger(:remove_web_resource_broadcast,{
+
+          resource_id:resource_id
+
+      })
+
     end
 
   end

@@ -24,7 +24,7 @@ APP.main_canvas = (function($){
         doc  = frame[0].contentWindow.document;
         body = $('body',doc);
 
-        displayHtml("<h1>Choose resource or add one!</h1>");
+        showDefaultHtml();
 
         $.textHighlighter.createWrapper = function(options) {
 
@@ -170,6 +170,23 @@ APP.main_canvas = (function($){
 
     }
 
+    function showDefaultHtml(){
+
+        displayHtml("<h1>Choose resource or add one!</h1>");
+
+    }
+
+    function resourceDeleted(id){
+
+        if(currentWebres.resource_id == id){
+
+            currentWebres = null;
+            showDefaultHtml();
+
+        }
+
+    }
+
     return {
 
         textHighlighted:textHighlighted,
@@ -177,7 +194,8 @@ APP.main_canvas = (function($){
         displayHtml:displayHtml,
         init:init,
         isHighlightEnabled:isHighlightEnabled,
-        removeHighlight:removeHighlight
+        removeHighlight:removeHighlight,
+        resourceDeleted: resourceDeleted
 
     }
 

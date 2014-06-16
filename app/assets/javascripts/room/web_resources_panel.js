@@ -19,6 +19,7 @@ function WebResourcesPanel(socket,room_id,container){
     this.resource_list = {};
     this.input = {};
     this.status = {};
+    this.user_id;
 
     this.url_pattern = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[{};:'".,<>?«»“”‘’]|\]|\?))/ig
 
@@ -50,10 +51,14 @@ function WebResourcesPanel(socket,room_id,container){
         var incRes = this.incoming_web_resource.bind(this);
         var resConf = this.web_resource_confirmation.bind(this);
         var resList = this.web_resource_list.bind(this);
+        var rmRes = this.remove_web_resource.bind(this);
+
+        this.user_id = this.socket.getUserId();
 
         this.socket.bind_on_dispatcher("add_web_resource_confirmation",resConf);
         this.socket.bind_on_channel("add_web_resource_broadcast",incRes);
         this.socket.bind_on_dispatcher("list_all_resources_response",resList);
+        this.socket.bind_on_channel("remove_web_resource_broadcast",rmRes);
 
         this.socket.trigger('room.list_all_resources', {room_id:this.room_id})
 
@@ -80,6 +85,19 @@ function WebResourcesPanel(socket,room_id,container){
         } else {
 
             APP.messages.showAlert("Bad resource url",2500);
+
+        }
+
+    }
+
+    this.remove_web_resource = function(data){
+
+        if(this.resources[data.resource_id]) {
+
+            APP.messages.showInfo(this.resources[data.resource_id].title+" was removed from resource list",2500);
+            delete this.resources[data.resource_id];
+            APP.main_canvas.resourceDeleted(data.resource_id);
+            $(this.resource_list).find("[data-obj-id="+data.resource_id+"]").remove();
 
         }
 
@@ -142,13 +160,39 @@ function WebResourcesPanel(socket,room_id,container){
 
     this.generateHtmlObj = function(data){
 
-        return $(
-            "<li data-obj-id="+data.resource_id+">"+
+        var a =$(
+                "<li data-obj-id="+data.resource_id+">"+
                 "<img src='"+data.image_url+"' alt="+data.title+" class='resource_image'></img>"+
                 "<h5><strong>"+data.title+"</strong></h5>"+
                 "<p>Added by '"+data.user_name+"'</p>"+
-            "</li>"
-        )
+                "</li>"
+        );
+
+        if(data.user_id == this.user_id){
+
+            var f =  function(event,res_id){
+
+                event.stopPropagation();
+                console.log("delete");
+                APP.socket.trigger('room.remove_web_resource',{
+
+                    room_id:this.room_id,
+                    resource_id:res_id
+
+                });
+
+            }.bind(this);
+
+            var but = $("<span></span>",{
+                class:'glyphicon glyphicon-remove',
+                click:function(event){ f(event,data.resource_id)}
+            });
+
+            but.appendTo(a);
+
+        }
+
+        return a;
 
     }
 

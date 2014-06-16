@@ -7,6 +7,7 @@ APP.socket = (function($){
 
     var dispatcher,channel;
     var onSuc = [];
+    var userId;
 
     function init(room_id){
 
@@ -28,6 +29,7 @@ APP.socket = (function($){
 
         console.log( "Joined channel ");
         console.log(data);
+        userId = data.id;
 
         for(var i=0;i<onSuc.length;i++)
             onSuc[i].call();
@@ -69,6 +71,12 @@ APP.socket = (function($){
 
     }
 
+    function getUserId(){
+
+        return userId;
+
+    }
+
     return {
 
         trigger:trigger,
@@ -76,7 +84,8 @@ APP.socket = (function($){
         bind_on_dispatcher:bind_on_dispatcher,
         on_successful_connection:on_successful_connection,
         init:init,
-        wait:wait
+        wait:wait,
+        getUserId:getUserId
 
     }
 
