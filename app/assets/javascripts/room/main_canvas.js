@@ -64,7 +64,6 @@ APP.main_canvas = (function($){
 
                     highlightEnabled = false;
                     $(this).find('span').find('span').html("disabled");
-                    frameDocument.find('.room-highlighted-text').css('cursor', 'initial');
                     break;
 
                 }
@@ -72,7 +71,6 @@ APP.main_canvas = (function($){
 
                     highlightEnabled = true;
                     $(this).find('span').find('span').html("enabled");
-                    frameDocument.find('.room-highlighted-text').css('cursor', 'initial');
                     break;
 
                 }
@@ -80,7 +78,6 @@ APP.main_canvas = (function($){
 
                     highlightEnabled = false;
                     $(this).find('span').find('span').html("remove");
-                    frameDocument.find('.room-highlighted-text').css('cursor', 'no-drop');
                     break;
 
                 }
