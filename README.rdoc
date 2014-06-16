@@ -1,3 +1,6 @@
 == Vos projekt
 
 This is project for Vos FIIT.
+
+Link to heroku app:
+http://colearn-vos.herokuapp.com/
