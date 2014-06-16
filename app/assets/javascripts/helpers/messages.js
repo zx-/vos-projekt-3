@@ -26,7 +26,7 @@ APP.messages = (function($){
         setTimeout(function() {
             $(e).fadeOut('fast');
             $(e).remove();
-        }, time); // <-- time in milliseconds
+        }, 5000); // <-- time in milliseconds
 
 
     }

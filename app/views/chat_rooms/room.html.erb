@@ -8,6 +8,7 @@
     <li><%= link_to raw('<i class="fa fa-angle-double-left"></i> Back to rooms'), chat_path  %></li>
 </ul>
 <%= render :partial => "/highlight_controls" %>
+<%= render :partial => "/note_controls" %>
 
 <!-- canvas -->
 
@@ -88,9 +89,15 @@
    var room_id = <%= @room.id %>;
 
     APP.socket.wait();
-   var chatbox = new ChatBox(APP.socket,room_id,$('.chat textarea'),$('.chat-message-box'));
-   var resources = new WebResourcesPanel(APP.socket,room_id,$('#resourceContainer'));
-   APP.socket.init(room_id);
-   APP.main_canvas.init(APP.socket,room_id,resources,$("#room-main-frame"));
+    var chatbox = new ChatBox(APP.socket,room_id,$('.chat textarea'),$('.chat-message-box'));
+    var resources = new WebResourcesPanel(APP.socket,room_id,$('#resourceContainer'));
+    APP.notes.init(APP.socket,room_id,$("#room-main-frame"));
+
+    APP.main_canvas.init(APP.socket,room_id,resources,$("#room-main-frame"));
+
+
+    APP.socket.init(room_id);
+
+
 
 </script>

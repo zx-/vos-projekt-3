@@ -24,6 +24,8 @@ WebsocketRails::EventMap.describe do
     subscribe :submit_message, :to => ChatSocketController, :with_method => :submit_message
     subscribe :add_web_resource, :to => ChatSocketController, :with_method => :add_web_resource
     subscribe :remove_web_resource, :to => ChatSocketController, :with_method => :remove_web_resource
+    subscribe :note_msg, :to => ChatSocketController, :with_method => :note_msg
+    subscribe :list_all_notes, :to => ChatSocketController, :with_method => :list_all_notes
   end
 
 end

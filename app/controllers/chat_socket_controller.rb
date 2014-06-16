@@ -11,7 +11,8 @@ class ChatSocketController < WebsocketRails::BaseController
   def submit_message
 
     puts "message submmited #{message}"
-    room_id = message[:room_id]
+    #room_id = message[:room_id]
+    room_id = connection_store[:room_id]
 
     post = ChatPost.new(chat_room_id:room_id,user_id:current_user.id,userName:current_user.username,text:message[:text])
 
@@ -25,7 +26,8 @@ class ChatSocketController < WebsocketRails::BaseController
 
   def web_resource_highlight
 
-    room_id = message[:room_id]
+    #room_id = message[:room_id]
+    room_id = connection_store[:room_id]
     WebsocketRails[room_id].trigger(:highlight_web_resource_broadcast,message)
     res = ChatRoomWebResource.find_by(web_resource_id:message[:resource_id])
     res.highlight = message[:highlight]
@@ -36,37 +38,69 @@ class ChatSocketController < WebsocketRails::BaseController
 
   def list_all_resources
 
-    room_id = message[:room_id]
+    #room_id = message[:room_id]
+    room_id = connection_store[:room_id]
 
-    if numeric? room_id
+    resources = []
+    ChatRoomWebResource.includes(:user,:web_resource).where("chat_room_id" => room_id).each do |res|
 
-      resources = []
-      ChatRoomWebResource.includes(:user,:web_resource).where("chat_room_id" => room_id).each do |res|
+      resources << {
+        resource_id:res.web_resource.id,
+        image_url:ActionController::Base.helpers.asset_path(res.web_resource.image),
+        title:res.web_resource.title,
+        user_name:res.user.username,
+        user_id:res.user_id,
+        url:res.web_resource.url,
+        html:res.web_resource.html_edited,
+        highlight:res.highlight,
+        web_res:res.id,
 
-        resources << {
-          resource_id:res.web_resource.id,
-          image_url:ActionController::Base.helpers.asset_path(res.web_resource.image),
-          title:res.web_resource.title,
-          user_name:res.user.username,
-          user_id:res.user_id,
-          url:res.web_resource.url,
-          html:res.web_resource.html_edited,
-          highlight:res.highlight
+      }
+
+    end
+
+    send_message :list_all_resources_response,{data:resources}
+
+  end
+
+  def list_all_notes
+    #list_all_notes_response
+
+    #room_id = message[:room_id]
+    room_id = connection_store[:room_id]
+    notes = []
+
+    puts "all notes"
+    ChatRoomWebResource.includes(:note).where("chat_room_id" => room_id).each do |res|
+
+      res.note.each do |note|
+
+        notes << {
+
+            resource_id:res.web_resource_id,
+            user_id:note.user_id,
+            note_id:note.id,
+            x:note.x,
+            y:note.y,
+            text:note.text,
+            create:true
 
         }
 
       end
 
-      send_message :list_all_resources_response,{data:resources}
-
     end
+
+    send_message :list_all_notes_response,{notes:notes}
+
 
   end
 
   def add_web_resource
 
     result = true
-    room_id = message[:room_id]
+    #room_id = message[:room_id]
+    room_id = connection_store[:room_id]
     room_res = nil
 
     res = WebResource.add_url_resource(message[:url])
@@ -93,7 +127,8 @@ class ChatSocketController < WebsocketRails::BaseController
               user_id:current_user.id,
               url:res.url,
               html:res.html_edited,
-              highlight:''
+              highlight:'',
+              web_res:room_res.id
           })
 
         else
@@ -133,12 +168,13 @@ class ChatSocketController < WebsocketRails::BaseController
 
   def remove_web_resource
 
-    room_id = message[:room_id]
+    #room_id = message[:room_id]
+    room_id = connection_store[:room_id]
     user_id = current_user.id
     resource_id = message[:resource_id]
 
     res = ChatRoomWebResource.find_by(web_resource_id:resource_id)
-    puts "res u id #{ res.user_id} userid #{user_id} res #{resource_id}"
+    puts "res u id #{res.user_id} userid #{user_id} res #{resource_id}"
 
     if res.user_id == user_id
 
@@ -152,6 +188,53 @@ class ChatSocketController < WebsocketRails::BaseController
       })
 
     end
+
+  end
+
+  def note_msg
+
+    user = current_user.id
+    #room_id = message[:room_id]
+    room_id = connection_store[:room_id]
+    create = message[:create]
+    res_id = message[:resource_id]
+    web_res = message[:web_res]
+
+
+
+    if create
+
+      note = Note.new(
+          user_id:current_user.id,
+          chat_room_web_resource_id:web_res,
+          x:message[:x],
+          y:message[:y],
+          text:message[:text]
+      )
+
+      if note.save
+
+        message[:user_id] = current_user.id
+        message[:note_id] = note.id
+        WebsocketRails[room_id].trigger(:note_broadcast,message)
+
+      end
+
+    else
+
+      note = Note.find_by(id:message[:note_id])
+
+      if note && note.user_id == current_user.id
+
+        note.destroy
+        WebsocketRails[room_id].trigger(:note_broadcast,message)
+
+      end
+
+
+    end
+
+
 
   end
 

@@ -155,6 +155,7 @@
 
   text-align : center;
   list-style: none;
+  margin-left:300px;
 
 }
 #room-menu li{
@@ -179,14 +180,11 @@ body,html {
 
 }
 
-// Highlight control
-#room-highlight-controls {
+// control
+
+.room-controls{
 
   vertical-align: middle;
-  position:absolute;
-  left:210px;
-  height: 23px;
-  top: 28px;
   padding: 0 5px;
   cursor:pointer;
   color:#aaaaaa;
@@ -197,5 +195,25 @@ body,html {
 
 }
 
+#room-highlight-controls {
+
+  position:absolute;
+  left:210px;
+  height: 23px;
+  top: 28px;
+
+}
+
   #room-highlight-controls :hover{ color:#222222 }
   .room-highlighted-text {}
+
+
+#note-highlight-controls{
+
+  position:absolute;
+  left:210px;
+  height: 23px;
+  top: 6px;
+
+
+}

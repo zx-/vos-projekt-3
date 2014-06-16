@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   has_many :room_rights
   has_many :chat_rooms, :through => :room_rights
   has_many :chat_posts
+  has_many :notes
 
 
   def self.find_first_by_auth_conditions(warden_conditions)

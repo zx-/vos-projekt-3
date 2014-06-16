@@ -51,12 +51,11 @@ APP.main_canvas = (function($){
         $(frame).load(initializeTextHighlighter);  // Non-IE
         $(frame).ready(initializeTextHighlighter); // IE
 
-        socket.bind_on_channel("highlight_web_resource_broadcast",receiveHighlight);
+        socket.on_successful_connection(socketReady)
 
         $("#room-highlight-controls").click(function(){
 
             highlightState = (highlightState+1)%3
-            var frameDocument = $(frame).contents();
 
             switch(highlightState){
 
@@ -87,17 +86,36 @@ APP.main_canvas = (function($){
         })
 
 
+
+        var iframeHtml = $(frame).contents().find('html').get(0);
+
+        $(iframeHtml).on('click',function(e){
+
+            APP.notes.createNote(e);
+
+        });
+
+
+        $(iframeHtml).on('click','.room-highlighted-text',function(){
+
+            APP.main_canvas.removeHighlight($(this));
+
+        });
+
+
+    }
+
+    function socketReady(){
+
+        socket.bind_on_channel("highlight_web_resource_broadcast",receiveHighlight);
+
     }
 
     function displayHtml(html){
 
         var iframeHtml = $(frame).contents().find('html').get(0);
         iframeHtml.innerHTML = html;
-        $(iframeHtml).on('click','.room-highlighted-text',function(){
 
-            APP.main_canvas.removeHighlight($(this));
-
-        })
 
     }
 
@@ -113,12 +131,19 @@ APP.main_canvas = (function($){
             $(currentWebres.elem).removeClass("selected-web-resource");
 
         }
+
         displayHtml(res.html);
+
         if (res.highlight.length>0)
             highlighter.deserializeHighlights(res.highlight);
 
         currentWebres = res;
         $(currentWebres.elem).addClass("selected-web-resource");
+        APP.notes.redraw();
+
+
+
+
 
 
     }
@@ -187,6 +212,12 @@ APP.main_canvas = (function($){
 
     }
 
+    function getCurrentResource(){
+
+        return currentWebres;
+
+    }
+
     return {
 
         textHighlighted:textHighlighted,
@@ -195,7 +226,8 @@ APP.main_canvas = (function($){
         init:init,
         isHighlightEnabled:isHighlightEnabled,
         removeHighlight:removeHighlight,
-        resourceDeleted: resourceDeleted
+        resourceDeleted: resourceDeleted,
+        getCurrentResource: getCurrentResource
 
     }
 
