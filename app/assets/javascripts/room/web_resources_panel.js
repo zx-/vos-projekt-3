@@ -74,6 +74,7 @@ function WebResourcesPanel(socket,room_id,container){
         console.log($(this.input).val())
 
         var url = $(this.input).val();
+        this.url_pattern.lastIndex = 0;
 
         if ( this.url_pattern.test(url) ){
 
@@ -84,7 +85,8 @@ function WebResourcesPanel(socket,room_id,container){
 
         } else {
 
-            APP.messages.showAlert("Bad resource url",2500);
+            if(url!="")
+                APP.messages.showAlert("Bad resource url",2500);
 
         }
 

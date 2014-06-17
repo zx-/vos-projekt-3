@@ -132,9 +132,8 @@ class ChatRoomsController < ApplicationController
 
   def check_room_rights!
 
-    chatRoom = ChatRoom.find_by_id(params[:id])
 
-    if !current_user.chat_rooms.any? { |r| r.id == chatRoom.id }
+    if !RoomRight.find_by(user_id:current_user.id,chat_room_id:params[:id])
 
       redirect_to chat_path
 

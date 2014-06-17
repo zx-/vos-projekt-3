@@ -153,10 +153,6 @@ class ChatSocketController < WebsocketRails::BaseController
   end
 
   def authorize_channels
-    # The channel name will be passed inside the message Hash
-
-   # WebsocketRails[message[:channel]].make_private
-    #channel = WebsocketRails[message[:channel]]
 
     if check_room_rights(message[:channel])
       accept_channel current_user
@@ -250,20 +246,24 @@ class ChatSocketController < WebsocketRails::BaseController
     puts "Check room rights for #{current_user} for room #{room_id}"
     if !connection_store[:room_id] || connection_store[:room_id]!=room_id
 
-      chatRoom = ChatRoom.find_by_id(room_id)
-      if current_user.chat_rooms.any? { |r| r.id == chatRoom.id }
+
+      if RoomRight.find_by(user_id:current_user.id,chat_room_id:room_id)
 
         puts "Test passed using pg db"
         connection_store[:room_id] = room_id
+
+        return room_id
 
       end
 
     else
 
       puts "Test passed without pg db"
-      room_id
+      return room_id
 
     end
+
+    return false
 
   end
 
