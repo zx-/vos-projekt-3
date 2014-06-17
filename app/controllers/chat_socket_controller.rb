@@ -169,7 +169,7 @@ class ChatSocketController < WebsocketRails::BaseController
     user_id = current_user.id
     resource_id = message[:resource_id]
 
-    res = ChatRoomWebResource.find_by(web_resource_id:resource_id)
+    res = ChatRoomWebResource.find_by(web_resource_id:resource_id,chat_room_id:room_id)
     puts "res u id #{res.user_id} userid #{user_id} res #{resource_id}"
 
     if res.user_id == user_id
