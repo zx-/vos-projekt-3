@@ -46,10 +46,40 @@ class PageParser
 
     end
 
-    doc
+    doc.to_s
+
+  end
+
+  def self.get_image doc
+
+    search = {
+
+        'meta[property="og:image"]' => 'content',
+        'link[rel="apple-touch-icon-precomposed"]' => 'href',
+        'link[rel="apple-touch-icon"]' => 'href',
+        'link[rel="icon"]' => 'href',
+        'link[rel="shortcut icon"]' => 'href'
+
+    }
 
 
 
+    search.each do |s,at|
+
+      elems = doc.search(s)
+
+      puts elems.inspect
+
+      if elems.last
+
+        return elems.last.attr at
+
+      end
+
+
+    end
+
+    return nil
 
 
   end
@@ -60,30 +90,25 @@ class PageParser
 
     domain = "http://"+domain
 
-    puts "change #{url} with #{domain}"
 
     if (url.to_s.match /^\w.*/) && !(url.to_s.match /^(http(s)?):\/\// ) && !(url.to_s.match /^www\..*/)
 
-      puts "to "+domain+"/"+url
       return domain+"/"+url.to_s
 
     end
 
     if url.to_s.match /^\..*/
 
-      puts "to "+domain+"/"+url
       return domain+"/"+url.to_s.slice!(0)
 
     end
 
     if url.to_s.match /^\/[^\/]+/
 
-      puts "to "+domain+url
       return domain+url.to_s
 
     end
 
-    puts "to #{url}"
     return url.to_s
 
   end

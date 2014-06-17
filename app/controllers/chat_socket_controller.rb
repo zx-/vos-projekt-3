@@ -46,7 +46,7 @@ class ChatSocketController < WebsocketRails::BaseController
 
       resources << {
         resource_id:res.web_resource.id,
-        image_url:ActionController::Base.helpers.asset_path(res.web_resource.image),
+        image_url:res.web_resource.get_image_url,
         title:res.web_resource.title,
         user_name:res.user.username,
         user_id:res.user_id,
@@ -121,7 +121,7 @@ class ChatSocketController < WebsocketRails::BaseController
           send_message :add_web_resource_confirmation,{success:true}
           WebsocketRails[room_id].trigger(:add_web_resource_broadcast, {
               resource_id:res.id,
-              image_url:ActionController::Base.helpers.asset_path(res.image),
+              image_url:res.get_image_url,
               title:res.title,
               user_name:current_user.username,
               user_id:current_user.id,

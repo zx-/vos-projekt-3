@@ -6,6 +6,20 @@ class WebResource < ActiveRecord::Base
   has_many :chat_room_web_resources
   has_many :chat_rooms, :through => :chat_room_web_resources
 
+  def get_image_url
+
+    if !self.image.nil?
+
+      return self.image
+
+    else
+
+      ActionController::Base.helpers.asset_path("default.jpg")
+
+    end
+
+  end
+
   def self.add_url_resource (in_url)
 
     false unless check_url in_url
@@ -20,21 +34,29 @@ class WebResource < ActiveRecord::Base
       doc = Nokogiri::HTML(open(url))
       puts "nokogiri passed"
       #image = ImageCreator.image_from_url(url)
-      image = "default.jpg"
-      edited_doc = doc
       original_html = doc.to_s
 
-      if image && doc
+      if doc
 
         puts "domain name:"
         puts get_domain_name(url)
-        edited_doc = PageParser::parse! edited_doc,get_domain_name(url)
+        edited_doc_string = PageParser::parse! doc,get_domain_name(url)
+        begin
+
+          image = PageParser::get_image doc
+
+        rescue
+
+          puts "image Failed"
+          image = nil
+
+        end
 
         resource = WebResource.new(
             url:url,
             image:image,
-            html_original:original_html,
-            html_edited: edited_doc.to_s,
+            html_original:original_html.encode('UTF-8'),
+            html_edited: edited_doc_string.encode('UTF-8'),
             title:doc.title
         )
 
@@ -49,9 +71,9 @@ class WebResource < ActiveRecord::Base
 
     end
 
-    return resource
+      return resource
 
-    end
+  end
 
   private
 
