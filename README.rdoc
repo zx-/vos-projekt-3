@@ -4,3 +4,6 @@ This is project for Vos FIIT.
 
 Link to heroku app:
 http://colearn-vos.herokuapp.com/
+
+video:
+https://www.youtube.com/watch?v=aiKyNW5Ww4g
